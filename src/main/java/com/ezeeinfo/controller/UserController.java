@@ -55,7 +55,6 @@ public class UserController {
 		userIOResponse.setRole(userDTO.getRole());
 		userIOResponse.setNamespace(namespaceIO);
 		userIOResponse.setActiveFlag(userDTO.getActiveFlag());
-//		userIOResponse.setUpdatedBy(userDTO.getUpdatedBy());
 
 		return userIOResponse;
 	}
@@ -72,7 +71,6 @@ public class UserController {
 		userDTO.setRole(userIO.getRole());
 		userDTO.setNamespace(namespaceDTO);
 		userDTO.setActiveFlag(userIO.getActiveFlag());
-//		userDTO.setUpdatedBy(userIO.getUpdatedBy());
 
 		return userDTO;
 	}

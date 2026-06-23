@@ -8,5 +8,5 @@ public class BaseDTO {
 	private String code;
 	private String name;
 	private Integer activeFlag;
-	private Integer updatedBy;
+	private UserDTO updatedBy;
 }

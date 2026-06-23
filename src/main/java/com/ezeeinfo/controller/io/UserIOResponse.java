@@ -5,7 +5,7 @@ import com.ezeeinfo.dto.enumeration.UserRoleEM;
 import lombok.Data;
 
 @Data
-public class UserIOResponse{
+public class UserIOResponse {
 	private String code;
 	private String username;
 	private NamespaceIO namespace;
@@ -13,5 +13,4 @@ public class UserIOResponse{
 	private String mobile;
 	private UserRoleEM role;
 	private Integer activeFlag;
-	private Integer updatedBy;
 }

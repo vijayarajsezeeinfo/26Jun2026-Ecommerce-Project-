@@ -15,10 +15,7 @@ import com.ezeeinfo.dto.CategoryDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.service.CategoryService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
-@Slf4j
 @RequestMapping("/category")
 public class CategoryController {
 
@@ -26,6 +23,8 @@ public class CategoryController {
 	CategoryService categoryService;
 	@Autowired
 	NamespaceController namespaceController;
+	
+
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
 	public List<CategoryIO> getAllCategories(@PathVariable("namespaceCode") String namespaceCode) {
@@ -49,7 +48,6 @@ public class CategoryController {
 		categoryIO.setName(categoryDTO.getName());
 		categoryIO.setNamespace(namespaceIO);
 		categoryIO.setActiveFlag(categoryDTO.getActiveFlag());
-//		categoryIO.setUpdatedBy(categoryDTO.getUpdatedBy());
 		return categoryIO;
 	}
 
@@ -60,7 +58,6 @@ public class CategoryController {
 		categoryDTO.setName(categoryIO.getName());
 		categoryDTO.setNamespace(namespaceDTO);
 		categoryDTO.setActiveFlag(categoryIO.getActiveFlag());
-//		categoryDTO.setUpdatedBy(categoryIO.getUpdatedBy());
 		return categoryDTO;
 	}
 }

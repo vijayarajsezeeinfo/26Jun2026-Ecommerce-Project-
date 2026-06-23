@@ -46,7 +46,6 @@ public class BrandController {
 		brandIO.setName(brandDTO.getName());
 		brandIO.setNamespace(namespaceIO);
 		brandIO.setActiveFlag(brandDTO.getActiveFlag());
-//		brandIO.setUpdatedBy(brandDTO.getUpdatedBy());
 		return brandIO;
 	}
 
@@ -57,7 +56,6 @@ public class BrandController {
 		brandDTO.setName(brandIO.getName());
 		brandDTO.setNamespace(namespaceDTO);
 		brandDTO.setActiveFlag(brandIO.getActiveFlag());
-//		brandDTO.setUpdatedBy(brandIO.getUpdatedBy());
 		return brandDTO;
 	}
 }

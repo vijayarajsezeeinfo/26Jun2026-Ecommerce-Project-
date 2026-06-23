@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.CategoryDAO;
+import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.CategoryDTO;
 import com.ezeeinfo.service.CategoryService;
 import com.ezeeinfo.util.SecurityUtil;
@@ -15,6 +16,8 @@ public class CategoryServicezimpl implements CategoryService {
 
 	@Autowired
 	CategoryDAO categoryDAO;
+	@Autowired
+	UserDAO userDAO;
 
 	@Override
 	public List<CategoryDTO> getAllCategories(String namespaceCode) {
@@ -31,7 +34,7 @@ public class CategoryServicezimpl implements CategoryService {
 	@Override
 	public CategoryDTO update(CategoryDTO categoryDTO) {
 		// TODO Auto-generated method stub
-		categoryDTO.setUpdatedBy(SecurityUtil.getUserId());
+		categoryDTO.setUpdatedBy(userDAO.getUser(SecurityUtil.getUserId()));
 		return categoryDAO.update(categoryDTO);
 	}
 

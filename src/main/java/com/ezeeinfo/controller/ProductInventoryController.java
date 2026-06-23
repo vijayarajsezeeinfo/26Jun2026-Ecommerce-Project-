@@ -52,7 +52,6 @@ public class ProductInventoryController {
 		productInventoryIO.setProduct(productIO);
 		productInventoryIO.setNamespace(namespaceIO);
 		productInventoryIO.setActiveFlag(productInventoryDTO.getActiveFlag());
-//		productInventoryIO.setUpdatedBy(productInventoryDTO.getUpdatedBy());
 		return productInventoryIO;
 	}
 
@@ -65,7 +64,6 @@ public class ProductInventoryController {
 		productInventoryDTO.setProduct(productDTO);
 		productInventoryDTO.setNamespace(namespaceDTO);
 		productInventoryDTO.setActiveFlag(productInventoryIO.getActiveFlag());
-//		productInventoryDTO.setUpdatedBy(productInventoryIO.getUpdatedBy());
 		return productInventoryDTO;
 	}
 

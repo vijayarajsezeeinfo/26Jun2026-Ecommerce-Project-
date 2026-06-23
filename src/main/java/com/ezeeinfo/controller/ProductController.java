@@ -47,7 +47,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public ProductIO update(@RequestBody ProductIO productIO) {
-		log.info("product io: {}",productIO);
+		log.info("product io: {}", productIO);
 		return productDTOToIO(productService.update(productIOToDTO(productIO)));
 	}
 
@@ -64,7 +64,6 @@ public class ProductController {
 		productIO.setCategory(categoryIO);
 		productIO.setNamespace(namespaceIO);
 		productIO.setActiveFlag(productDTO.getActiveFlag());
-//		productIO.setUpdatedBy(productDTO.getUpdatedBy());
 		return productIO;
 	}
 
@@ -81,7 +80,6 @@ public class ProductController {
 		productDTO.setCategory(categoryDTO);
 		productDTO.setNamespace(namespaceDTO);
 		productDTO.setActiveFlag(productIO.getActiveFlag());
-//		productDTO.setUpdatedBy(productIO.getUpdatedBy());
 		return productDTO;
 	}
 }

@@ -3,6 +3,7 @@ package com.ezeeinfo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,12 +47,22 @@ public class OrderRequestController {
 	@Autowired
 	ProductController productController;
 
-	@RequestMapping(value="/update" ,method = RequestMethod.POST)
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public OrderRequestIO update(@RequestBody OrderRequestIO orderRequestIO) {
-		log.info("OrderRequestIO : {}",orderRequestIO);
-		OrderRequestDTO dto=orderRequestService.update(orIOToDTO(orderRequestIO));
-		log.info("OrderRequest DTO : {}",dto);
+		log.info("OrderRequestIO : {}", orderRequestIO);
+		OrderRequestDTO dto = orderRequestService.update(orIOToDTO(orderRequestIO));
+		log.info("OrderRequest DTO : {}", dto);
 		return orDTOToIO(dto);
+	}
+
+	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
+	public OrderRequestIO getOrderByCode(@PathVariable("code") String code) {
+		return orDTOToIO(orderRequestService.getOrderByCode(code));
+	}
+
+	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
+	public List<OrderRequestIO> getAllOrders(@PathVariable("namespaceCode") String namespaceCode) {
+		return orderRequestService.getAllOrders(namespaceCode).stream().map(dto -> orDTOToIO(dto)).toList();
 	}
 
 	public OrderIO orderDTOToIO(OrderDTO orderDTO) {
@@ -65,8 +76,6 @@ public class OrderRequestController {
 		orderIO.setTotalAmount(orderDTO.getTotalAmount());
 		orderIO.setOrderDate(orderDTO.getOrderDate());
 		orderIO.setActiveFlag(orderDTO.getActiveFlag());
-//		orderIO.setUpdatedBy(orderDTO.getUpdatedBy());
-
 		return orderIO;
 	}
 
@@ -81,7 +90,6 @@ public class OrderRequestController {
 		orderDTO.setTotalAmount(orderIO.getTotalAmount());
 		orderDTO.setOrderDate(orderIO.getOrderDate());
 		orderDTO.setActiveFlag(orderIO.getActiveFlag());
-//		orderDTO.setUpdatedBy(orderIO.getUpdatedBy());
 
 		return orderDTO;
 	}
@@ -101,7 +109,6 @@ public class OrderRequestController {
 		paymentIO.setRemarks(paymentDTO.getRemarks());
 		paymentIO.setNamespace(namespaceIO);
 		paymentIO.setActiveFlag(paymentDTO.getActiveFlag());
-//		paymentIO.setUpdatedBy(paymentDTO.getUpdatedBy());
 		return paymentIO;
 	}
 
@@ -120,7 +127,6 @@ public class OrderRequestController {
 		paymentDTO.setRemarks(paymentIO.getRemarks());
 		paymentDTO.setNamespace(namespaceDTO);
 		paymentDTO.setActiveFlag(paymentIO.getActiveFlag());
-//		paymentDTO.setUpdatedBy(paymentIO.getUpdatedBy());
 		return paymentDTO;
 	}
 
@@ -131,7 +137,6 @@ public class OrderRequestController {
 		OrderItemIO io = new OrderItemIO();
 		io.setCode(dto.getCode());
 		io.setActiveFlag(dto.getActiveFlag());
-//		io.setUpdatedBy(dto.getUpdatedBy());
 		io.setOrder(orderIO);
 		io.setProduct(productIO);
 		io.setQuantity(dto.getQuantity());
@@ -147,7 +152,6 @@ public class OrderRequestController {
 		OrderItemDTO dto = new OrderItemDTO();
 		dto.setCode(io.getCode());
 		dto.setActiveFlag(io.getActiveFlag());
-//		dto.setUpdatedBy(io.getUpdatedBy());
 		dto.setOrder(orderDTO);
 		dto.setProduct(productDTO);
 		dto.setQuantity(io.getQuantity());

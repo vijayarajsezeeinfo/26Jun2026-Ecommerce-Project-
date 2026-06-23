@@ -2,77 +2,78 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import org.ehcache.Cache;
-import org.ehcache.CacheManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.NamespaceDAO;
+import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.service.NamespaceService;
 import com.ezeeinfo.util.SecurityUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class NamespaceServiceImpl implements NamespaceService {
 
 	@Autowired
 	private NamespaceDAO namespaceDAO;
+	@Autowired
+	UserDAO userDAO;
 
 	@Autowired
-	private CacheManager cacheManager;
+	private RedisTemplate<String, Object> redisTemplate;
+
+	private static Logger LOG = LoggerFactory.getLogger(NamespaceServiceImpl.class);
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<NamespaceDTO> getAllNamespaces() {
 
-		Cache<String, List> cache = cacheManager.getCache("namespaceListCache", String.class, List.class);
-		List<NamespaceDTO> namespaces = (List<NamespaceDTO>) cache.get("ALL_NAMESPACES");
-		if (namespaces != null)
-			log.info("getAllNamespaces retrieved from cache");
+		List<NamespaceDTO> namespaces = (List<NamespaceDTO>) redisTemplate.opsForValue().get("ALL_NAMESPACES");
+		if (namespaces != null) {
+			LOG.info("getAllNamespaces retrieved from cache");
+		}
 		if (namespaces == null) {
-			log.info("Hitting DB to getAllNamespaces");
+			LOG.info("Hitting DB to getAllNamespaces");
 			namespaces = namespaceDAO.getAllNamespaces();
 			if (namespaces != null) {
-				cache.put("ALL_NAMESPACES", namespaces);
+				redisTemplate.opsForValue().set("ALL_NAMESPACES", namespaces);
 			}
 		}
+
 		return namespaces;
 	}
 
 	@Override
 	public NamespaceDTO getNamespaceByCode(String code) {
 
-		Cache<String, NamespaceDTO> cache = cacheManager.getCache("namespaceCache", String.class, NamespaceDTO.class);
-		NamespaceDTO namespace = cache.get(code);
-		if (namespace != null)
-			log.info("getNamespaceByCode for code {} retrieved from cache", code);
+		NamespaceDTO namespace = (NamespaceDTO) redisTemplate.opsForValue().get(code);
+		if (namespace != null) {
+			LOG.info("getNamespaceByCode retrieved from cache");
+		}
 		if (namespace == null) {
-			log.info("Hitting DB to getNamespaceByCode for code {}", code);
+			LOG.info("Hitting DB to getNamespaceByCode");
 			namespace = namespaceDAO.getNamespaceByCode(code);
 			if (namespace != null) {
-				cache.put(code, namespace);
+				redisTemplate.opsForValue().set(code, namespace);
 			}
 		}
+
 		return namespace;
 	}
 
 	@Override
 	public NamespaceDTO update(NamespaceDTO namespaceDTO) {
-
-		log.info("SecurityUtil User Id : {}", SecurityUtil.getUserId());
-		namespaceDTO.setUpdatedBy(SecurityUtil.getUserId());
-		log.info("Namespace UpdatedBy : {}", namespaceDTO.getUpdatedBy());
+		namespaceDTO.setUpdatedBy(userDAO.getUser(SecurityUtil.getUserId()));
 		NamespaceDTO updatedNamespace = namespaceDAO.update(namespaceDTO);
 		if (updatedNamespace != null) {
-			Cache<String, NamespaceDTO> namespaceCache = cacheManager.getCache("namespaceCache", String.class, NamespaceDTO.class);
-			namespaceCache.put(updatedNamespace.getCode(), updatedNamespace);
-			Cache<String, List> namespaceListCache = cacheManager.getCache("namespaceListCache", String.class, List.class);
-			namespaceListCache.remove("ALL_NAMESPACES");
-			log.info("Namespace cache updated and namespace list cache cleared");
+			redisTemplate.opsForValue().set(updatedNamespace.getCode(), updatedNamespace);
+			redisTemplate.delete("ALL_NAMESPACES");
+			LOG.info("Namespace cache updated and namespace list cache cleared");
 		}
+
 		return updatedNamespace;
 	}
 }
